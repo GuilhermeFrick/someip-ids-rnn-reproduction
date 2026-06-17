@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Saídas de treino
+results/*.pt
+results/*.png
+
+# OS
+Thumbs.db
+.DS_Store
