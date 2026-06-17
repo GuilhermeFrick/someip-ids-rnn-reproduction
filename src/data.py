@@ -25,14 +25,34 @@ CLASS_WEIGHTS = [0.16, 6.68, 10.35, 4.33, 4.86]
 
 
 def _to_labels(Y) -> np.ndarray:
+    """Normaliza rótulos para um vetor 1-D de índices de classe (int64).
+
+    O dataset oficial é inconsistente: Y_train vem como inteiros de forma (N, 1) e
+    Y_test como one-hot de forma (N, 5). Esta função aceita os dois formatos.
+
+    Args:
+        Y: rótulos em qualquer um dos formatos (inteiros (N,1) ou one-hot (N,5)).
+
+    Returns:
+        np.ndarray (N,) com o índice da classe (0..4) por amostra.
+    """
     Y = np.array(Y)
-    if Y.ndim > 1 and Y.shape[1] > 1:   # one-hot
+    if Y.ndim > 1 and Y.shape[1] > 1:   # one-hot -> índice da classe
         return Y.argmax(1).astype(np.int64)
-    return Y.ravel().astype(np.int64)
+    return Y.ravel().astype(np.int64)   # já são inteiros -> só achata
 
 
 def load(zip_path: Path = ZIP):
-    """Retorna (X_train, y_train, X_test, y_test) como numpy arrays."""
+    """Carrega o dataset oficial pré-processado a partir do zip.
+
+    Args:
+        zip_path: caminho do `Sequence_data.zip`. Por padrão, `data/Sequence_data.zip`.
+
+    Returns:
+        Tupla (X_train, y_train, X_test, y_test):
+            X_train (2807, 60, 195) float32, X_test (2771, 60, 195) float32 — janelas de
+            60 pacotes × 195 features one-hot; y_train/y_test (N,) int64 com a classe (0..4).
+    """
     with zipfile.ZipFile(zip_path) as z:
         X_train = np.array(pickle.load(z.open("X_train.pickle"))).astype(np.float32)
         X_test = np.array(pickle.load(z.open("X_test.pickle"))).astype(np.float32)

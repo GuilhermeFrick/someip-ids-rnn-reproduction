@@ -10,6 +10,20 @@ from .data import CLASS_NAMES
 
 
 def report(y_true: np.ndarray, y_pred: np.ndarray, title: str = "") -> dict:
+    """Imprime e retorna as métricas de classificação multiclasse.
+
+    Calcula acurácia, F1 macro e ponderado, precisão/recall/F1 por classe e a matriz de
+    confusão; imprime tudo de forma legível e devolve num dicionário.
+
+    Args:
+        y_true: rótulos verdadeiros (N,), inteiros 0..4.
+        y_pred: rótulos previstos (N,), inteiros 0..4.
+        title: título opcional exibido no cabeçalho (ex.: nome do modelo).
+
+    Returns:
+        dict com chaves: accuracy, f1_macro, f1_weighted, precision, recall, f1
+        (listas por classe) e confusion_matrix.
+    """
     acc = accuracy_score(y_true, y_pred)
     p, r, f1, _ = precision_recall_fscore_support(
         y_true, y_pred, labels=range(len(CLASS_NAMES)), zero_division=0)
